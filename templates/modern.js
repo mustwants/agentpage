@@ -88,19 +88,6 @@ module.exports = function modernTemplate(data) {
     /* CONTENT */
     .container { max-width: 1100px; margin: 0 auto; padding: 80px 40px; }
 
-    /* STATS */
-    .stats {
-      display: grid; grid-template-columns: repeat(3, 1fr);
-      gap: 2px; background: #eee;
-      margin-bottom: 80px;
-    }
-    .stat {
-      background: #fff;
-      padding: 40px; text-align: center;
-    }
-    .stat .number { font-size: 2.5rem; font-weight: 800; }
-    .stat .label { font-size: .85rem; color: #888; text-transform: uppercase; letter-spacing: .08em; margin-top: 4px; }
-
     /* SECTION */
     section { margin-bottom: 72px; }
     section h2 {
@@ -165,7 +152,6 @@ module.exports = function modernTemplate(data) {
       .hero-text { padding: 60px 24px; }
       nav { padding: 16px 24px; }
       .container { padding: 60px 24px; }
-      .stats { grid-template-columns: 1fr; }
     }
   </style>
 </head>

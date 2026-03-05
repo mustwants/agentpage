@@ -9,143 +9,357 @@
     :root {
       --blue: #0066cc;
       --blue-dark: #0051a3;
+      --blue-light: #e0f0ff;
       --green: #16a34a;
+      --green-bg: #f0fdf4;
       --red: #dc2626;
       --border: #e5e7eb;
-      --bg: #f9fafb;
+      --border-dark: #d1d5db;
+      --bg: #f3f4f6;
+      --surface: #fff;
       --text: #111827;
       --muted: #6b7280;
-      --radius: 8px;
+      --muted-light: #9ca3af;
+      --radius: 10px;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
+      --shadow: 0 4px 12px rgba(0,0,0,.08), 0 2px 4px rgba(0,0,0,.05);
+      --shadow-lg: 0 10px 32px rgba(0,0,0,.1), 0 4px 8px rgba(0,0,0,.06);
     }
-    body { font-family: system-ui, -apple-system, 'Segoe UI', Arial, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+    body {
+      font-family: system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
 
-    /* HEADER */
+    /* ── HEADER ── */
     header {
-      background: #fff;
+      background: var(--surface);
       border-bottom: 1px solid var(--border);
       padding: 0 32px;
-      display: flex; align-items: center; justify-content: space-between;
-      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 60px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: var(--shadow-sm);
     }
-    .logo { font-size: 1.2rem; font-weight: 700; color: var(--blue); }
-    .logo span { color: var(--text); }
+    .logo {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--blue);
+      letter-spacing: -.01em;
+    }
+    .logo-sep {
+      font-weight: 400;
+      color: var(--muted-light);
+      margin: 0 6px;
+    }
+    .logo-app {
+      font-weight: 500;
+      color: var(--muted);
+      font-size: 1rem;
+    }
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
     .header-badge {
-      font-size: .75rem; background: #e0f2fe; color: #0369a1;
-      padding: 4px 10px; border-radius: 100px; font-weight: 600;
+      font-size: .72rem;
+      background: var(--blue-light);
+      color: var(--blue);
+      padding: 4px 10px;
+      border-radius: 100px;
+      font-weight: 600;
+      letter-spacing: .02em;
     }
 
-    /* LAYOUT */
-    .app { max-width: 1100px; margin: 40px auto; padding: 0 24px; }
-    h1.page-title { font-size: 1.75rem; font-weight: 800; margin-bottom: 6px; }
-    .page-subtitle { color: var(--muted); margin-bottom: 40px; }
+    /* ── HERO ── */
+    .hero-banner {
+      background: linear-gradient(135deg, #0a3d6b 0%, #0066cc 60%, #0284c7 100%);
+      color: #fff;
+      padding: 36px 32px;
+      text-align: center;
+    }
+    .hero-banner h1 {
+      font-size: 1.75rem;
+      font-weight: 800;
+      letter-spacing: -.02em;
+      margin-bottom: 8px;
+    }
+    .hero-banner p {
+      color: rgba(255,255,255,.78);
+      font-size: .95rem;
+      max-width: 520px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
 
-    /* STEPPER */
+    /* ── LAYOUT ── */
+    .app {
+      max-width: 1060px;
+      margin: 36px auto;
+      padding: 0 24px;
+      flex: 1;
+      width: 100%;
+    }
+
+    /* ── STEPPER ── */
     .stepper {
-      display: flex; gap: 0; margin-bottom: 40px;
-      border: 1px solid var(--border); border-radius: var(--radius);
-      overflow: hidden; background: #fff;
+      display: flex;
+      align-items: stretch;
+      margin-bottom: 32px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      position: relative;
     }
     .step {
-      flex: 1; padding: 16px 20px;
-      display: flex; align-items: center; gap: 12px;
+      flex: 1;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
       border-right: 1px solid var(--border);
-      cursor: pointer; transition: background .15s;
       user-select: none;
+      transition: background .15s;
+      position: relative;
     }
     .step:last-child { border-right: none; }
+    .step.clickable { cursor: pointer; }
+    .step.clickable:hover { background: #f9fafb; }
     .step.active { background: var(--blue); color: #fff; }
-    .step.done { background: #f0fdf4; }
+    .step.done { background: var(--green-bg); cursor: pointer; }
+    .step.done:hover { background: #dcfce7; }
+    .step.future { opacity: .45; cursor: not-allowed; }
     .step-num {
-      width: 28px; height: 28px; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: .85rem; font-weight: 700; flex-shrink: 0;
-      background: rgba(0,0,0,.1); color: inherit;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .82rem;
+      font-weight: 700;
+      flex-shrink: 0;
+      background: rgba(0,0,0,.1);
+      color: inherit;
+      transition: background .15s;
     }
     .step.active .step-num { background: rgba(255,255,255,.25); }
-    .step.done .step-num { background: var(--green); color: #fff; }
-    .step-label { font-size: .9rem; font-weight: 600; }
+    .step.done .step-num { background: var(--green); color: #fff; font-size: .95rem; }
+    .step-label {
+      font-size: .88rem;
+      font-weight: 600;
+    }
+    .step-sublabel {
+      font-size: .74rem;
+      opacity: .65;
+      margin-top: 1px;
+    }
 
-    /* PANELS */
+    /* ── PANELS ── */
     .panel { display: none; }
     .panel.active { display: block; }
 
-    /* CARDS */
+    /* ── CARDS ── */
     .card {
-      background: #fff; border: 1px solid var(--border);
-      border-radius: var(--radius); padding: 28px;
-      margin-bottom: 24px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow-sm);
     }
-    .card-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 18px; }
+    .card-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: var(--text);
+    }
+    .card-subtitle {
+      font-size: .84rem;
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
 
-    /* VERSION GRID */
+    /* ── VERSION GRID ── */
     .version-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 20px;
+      gap: 16px;
     }
     .version-card {
       border: 2px solid var(--border);
       border-radius: var(--radius);
       overflow: hidden;
       cursor: pointer;
-      transition: border-color .15s, box-shadow .15s;
+      transition: border-color .15s, box-shadow .15s, transform .15s;
     }
-    .version-card:hover { border-color: var(--blue); box-shadow: 0 4px 16px rgba(0,102,204,.12); }
-    .version-card.selected { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(0,102,204,.18); }
-    .version-thumb { width: 100%; height: 160px; object-fit: cover; display: block; background: #f0f0f0; }
-    .version-info { padding: 16px; }
-    .version-name { font-weight: 700; margin-bottom: 6px; display: flex; align-items: center; justify-content: space-between; }
-    .version-desc { font-size: .85rem; color: var(--muted); line-height: 1.5; }
+    .version-card:hover {
+      border-color: #93c5fd;
+      box-shadow: var(--shadow);
+      transform: translateY(-2px);
+    }
+    .version-card.selected {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(0,102,204,.16), var(--shadow);
+    }
+    .version-thumb {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      display: block;
+      background: #f0f0f0;
+    }
+    .version-info {
+      padding: 14px 16px;
+    }
+    .version-name {
+      font-weight: 700;
+      font-size: .95rem;
+      margin-bottom: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .version-desc {
+      font-size: .82rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
     .version-check {
-      width: 20px; height: 20px; border-radius: 50%;
-      background: var(--blue); color: #fff;
-      display: none; align-items: center; justify-content: center;
-      font-size: .75rem; flex-shrink: 0;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--blue);
+      color: #fff;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      font-size: .75rem;
+      flex-shrink: 0;
     }
     .version-card.selected .version-check { display: flex; }
 
-    /* FORM */
-    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
-    .form-group { display: flex; flex-direction: column; gap: 6px; }
-    .form-group.full { grid-column: 1 / -1; }
-    label { font-size: .85rem; font-weight: 600; color: var(--text); }
-    input, textarea {
-      border: 1px solid var(--border); border-radius: 6px;
-      padding: 10px 12px; font-size: .95rem; font-family: inherit;
-      color: var(--text); outline: none; transition: border-color .15s;
-      width: 100%;
+    /* ── FORM ── */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
     }
-    input:focus, textarea:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(0,102,204,.1); }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .form-group.full { grid-column: 1 / -1; }
+    label {
+      font-size: .83rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+    label .req {
+      color: var(--red);
+      margin-left: 2px;
+    }
+    input, textarea {
+      border: 1.5px solid var(--border);
+      border-radius: 7px;
+      padding: 9px 12px;
+      font-size: .93rem;
+      font-family: inherit;
+      color: var(--text);
+      outline: none;
+      transition: border-color .15s, box-shadow .15s;
+      width: 100%;
+      background: #fff;
+    }
+    input:focus, textarea:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(0,102,204,.1);
+    }
+    input.error, textarea.error {
+      border-color: var(--red);
+      box-shadow: 0 0 0 3px rgba(220,38,38,.1);
+    }
     textarea { min-height: 100px; resize: vertical; }
-    .field-hint { font-size: .78rem; color: var(--muted); }
+    .field-hint {
+      font-size: .77rem;
+      color: var(--muted-light);
+    }
+    .field-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .char-count {
+      font-size: .75rem;
+      color: var(--muted-light);
+    }
+    .char-count.warn { color: #d97706; }
 
-    /* SPECIALTIES */
-    .specialty-input-row { display: flex; gap: 10px; }
+    /* ── SPECIALTIES ── */
+    .specialty-input-row { display: flex; gap: 8px; }
     .specialty-input-row input { flex: 1; }
     .btn-add-spec {
-      padding: 10px 18px; background: var(--blue); color: #fff;
-      border: none; border-radius: 6px; font-size: .9rem;
-      cursor: pointer; font-weight: 600; white-space: nowrap;
+      padding: 9px 16px;
+      background: var(--blue);
+      color: #fff;
+      border: none;
+      border-radius: 7px;
+      font-size: .88rem;
+      cursor: pointer;
+      font-weight: 600;
+      white-space: nowrap;
+      transition: background .15s;
     }
     .btn-add-spec:hover { background: var(--blue-dark); }
-    .specialty-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+    .specialty-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-top: 10px;
+      min-height: 8px;
+    }
     .spec-tag {
-      display: inline-flex; align-items: center; gap: 6px;
-      background: #e0f2fe; color: #0369a1;
-      padding: 5px 12px; border-radius: 100px;
-      font-size: .82rem; font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: var(--blue-light);
+      color: var(--blue);
+      padding: 4px 11px;
+      border-radius: 100px;
+      font-size: .8rem;
+      font-weight: 600;
+      animation: tagIn .15s ease;
     }
+    @keyframes tagIn { from { opacity: 0; transform: scale(.9); } to { opacity: 1; transform: scale(1); } }
     .spec-tag button {
-      border: none; background: none; cursor: pointer;
-      color: #0369a1; font-size: 1rem; line-height: 1;
-      padding: 0; margin: 0;
+      border: none;
+      background: none;
+      cursor: pointer;
+      color: var(--blue);
+      font-size: .95rem;
+      line-height: 1;
+      padding: 0;
+      opacity: .7;
+      transition: opacity .1s;
     }
+    .spec-tag button:hover { opacity: 1; }
 
-    /* IMAGE UPLOAD */
+    /* ── IMAGE UPLOAD ── */
     .upload-zone {
       border: 2px dashed var(--border);
       border-radius: var(--radius);
-      padding: 40px 20px;
+      padding: 36px 20px;
       text-align: center;
       cursor: pointer;
       transition: border-color .2s, background .2s;
@@ -153,152 +367,340 @@
     }
     .upload-zone:hover, .upload-zone.dragover {
       border-color: var(--blue);
-      background: rgba(0,102,204,.04);
+      background: rgba(0,102,204,.03);
     }
+    .upload-zone.has-file { border-style: solid; border-color: var(--green); }
     .upload-zone input[type="file"] {
-      position: absolute; inset: 0; width: 100%; height: 100%;
-      opacity: 0; cursor: pointer;
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      cursor: pointer;
     }
-    .upload-icon { font-size: 2.5rem; margin-bottom: 10px; }
-    .upload-label { font-weight: 600; margin-bottom: 4px; }
-    .upload-hint { font-size: .82rem; color: var(--muted); }
+    .upload-icon { font-size: 2.2rem; margin-bottom: 8px; line-height: 1; }
+    .upload-label { font-weight: 600; font-size: .93rem; margin-bottom: 4px; }
+    .upload-hint { font-size: .8rem; color: var(--muted); }
 
-    /* IMAGE PREVIEW GRID */
+    /* ── IMAGE PREVIEW GRID ── */
     .image-preview-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-      gap: 12px;
-      margin-top: 16px;
+      grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+      gap: 10px;
+      margin-top: 14px;
     }
     .preview-item {
       position: relative;
-      border-radius: 6px;
+      border-radius: 7px;
       overflow: hidden;
       aspect-ratio: 1;
       background: #f0f0f0;
+      box-shadow: var(--shadow-sm);
     }
     .preview-item img {
-      width: 100%; height: 100%; object-fit: cover; display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform .2s;
     }
+    .preview-item:hover img { transform: scale(1.04); }
     .preview-item .remove-btn {
-      position: absolute; top: 4px; right: 4px;
-      width: 22px; height: 22px;
-      background: rgba(0,0,0,.6); color: #fff;
-      border: none; border-radius: 50%;
-      font-size: .8rem; cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      line-height: 1;
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      width: 22px;
+      height: 22px;
+      background: rgba(0,0,0,.65);
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      font-size: .8rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity .15s;
     }
+    .preview-item:hover .remove-btn { opacity: 1; }
     .preview-item .img-label {
-      position: absolute; bottom: 0; left: 0; right: 0;
-      background: rgba(0,0,0,.55); color: #fff;
-      font-size: .65rem; text-align: center; padding: 3px;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(0,0,0,.5);
+      color: #fff;
+      font-size: .65rem;
+      text-align: center;
+      padding: 3px;
     }
 
-    /* UPLOAD PROGRESS */
+    /* ── UPLOAD PROGRESS ── */
     .upload-progress {
       display: none;
-      margin-top: 12px;
-      background: #f0f0f0;
-      border-radius: 100px; overflow: hidden; height: 6px;
+      margin-top: 10px;
+      background: #e9ecef;
+      border-radius: 100px;
+      overflow: hidden;
+      height: 5px;
     }
     .upload-progress-bar {
-      height: 100%; background: var(--blue);
+      height: 100%;
+      background: var(--blue);
       transition: width .3s ease;
       width: 0%;
     }
-    .upload-status { font-size: .82rem; color: var(--muted); margin-top: 6px; }
+    .upload-status { font-size: .8rem; color: var(--muted); margin-top: 5px; }
 
-    /* TOAST */
+    /* ── REVIEW ── */
+    .review-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+    }
+    .review-item {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .review-item:nth-child(odd) { border-right: 1px solid var(--border); }
+    .review-item:nth-last-child(-n+2) { border-bottom: none; }
+    .review-label {
+      font-size: .72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      color: var(--muted);
+      margin-bottom: 3px;
+    }
+    .review-value {
+      font-size: .9rem;
+      font-weight: 500;
+      color: var(--text);
+    }
+    .review-value em { color: var(--muted-light); font-style: normal; }
+
+    /* ── TOAST ── */
     .toast-container {
-      position: fixed; bottom: 24px; right: 24px;
-      display: flex; flex-direction: column; gap: 10px;
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
       z-index: 9999;
     }
     .toast {
-      padding: 12px 18px; border-radius: 8px;
-      font-size: .9rem; font-weight: 600;
-      box-shadow: 0 4px 16px rgba(0,0,0,.15);
-      animation: slideIn .25s ease;
-      display: flex; align-items: center; gap: 10px;
+      padding: 11px 16px;
+      border-radius: 8px;
+      font-size: .88rem;
+      font-weight: 600;
+      box-shadow: var(--shadow-lg);
+      animation: slideIn .22s ease;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      max-width: 320px;
     }
     .toast.success { background: var(--green); color: #fff; }
     .toast.error { background: var(--red); color: #fff; }
     .toast.info { background: var(--blue); color: #fff; }
-    @keyframes slideIn { from { transform: translateX(60px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+    .toast-close {
+      margin-left: auto;
+      background: none;
+      border: none;
+      color: inherit;
+      opacity: .7;
+      cursor: pointer;
+      font-size: 1rem;
+      line-height: 1;
+      padding: 0 2px;
+      flex-shrink: 0;
+    }
+    .toast-close:hover { opacity: 1; }
+    @keyframes slideIn {
+      from { transform: translateX(56px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    @keyframes slideOut {
+      from { transform: translateX(0); opacity: 1; }
+      to { transform: translateX(56px); opacity: 0; }
+    }
 
-    /* BUTTONS */
-    .btn-row { display: flex; gap: 12px; justify-content: flex-end; margin-top: 28px; }
+    /* ── BUTTONS ── */
+    .btn-row {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      margin-top: 24px;
+    }
     .btn {
-      padding: 12px 28px; border-radius: 6px; font-size: .95rem;
-      font-weight: 700; cursor: pointer; border: none; transition: all .15s;
+      padding: 11px 24px;
+      border-radius: 7px;
+      font-size: .92rem;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      transition: all .15s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
     }
     .btn-primary { background: var(--blue); color: #fff; }
     .btn-primary:hover { background: var(--blue-dark); }
-    .btn-primary:disabled { background: #93c5fd; cursor: not-allowed; }
-    .btn-outline { background: #fff; color: var(--text); border: 2px solid var(--border); }
-    .btn-outline:hover { border-color: #aaa; }
+    .btn-primary:disabled { background: #93c5fd; cursor: not-allowed; opacity: .8; }
+    .btn-outline { background: #fff; color: var(--text); border: 1.5px solid var(--border-dark); }
+    .btn-outline:hover { background: #f9fafb; border-color: #9ca3af; }
     .btn-success { background: var(--green); color: #fff; }
     .btn-success:hover { background: #15803d; }
+    .btn-success:disabled { opacity: .7; cursor: not-allowed; }
+    .btn-ghost { background: transparent; color: var(--blue); font-weight: 600; border: none; padding: 0; font-size: .88rem; cursor: pointer; }
+    .btn-ghost:hover { text-decoration: underline; }
 
-    /* RESULT */
-    .result-card {
-      text-align: center; padding: 48px 32px;
+    /* ── RESULT ── */
+    .result-card { text-align: center; padding: 52px 32px 44px; }
+    .result-icon { font-size: 3.5rem; margin-bottom: 18px; line-height: 1; }
+    .result-title { font-size: 1.5rem; font-weight: 800; letter-spacing: -.02em; margin-bottom: 8px; }
+    .result-subtitle { color: var(--muted); margin-bottom: 28px; font-size: .93rem; }
+    .result-url-box {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #f3f4f6;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 14px;
+      margin: 0 auto 28px;
+      max-width: 480px;
     }
-    .result-icon { font-size: 4rem; margin-bottom: 20px; }
-    .result-title { font-size: 1.4rem; font-weight: 800; margin-bottom: 10px; }
-    .result-subtitle { color: var(--muted); margin-bottom: 32px; }
-    .result-actions { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+    .result-url-text {
+      flex: 1;
+      font-size: .83rem;
+      color: var(--muted);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      text-align: left;
+    }
+    .btn-copy {
+      padding: 6px 14px;
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 5px;
+      font-size: .8rem;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      color: var(--text);
+      transition: all .15s;
+      flex-shrink: 0;
+    }
+    .btn-copy:hover { background: #f9fafb; border-color: #9ca3af; }
+    .btn-copy.copied { background: var(--green); color: #fff; border-color: var(--green); }
+    .result-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
 
-    /* RESPONSIVE */
+    /* ── EMPTY STATE ── */
+    .empty-hint {
+      text-align: center;
+      padding: 28px 20px;
+      color: var(--muted);
+      font-size: .88rem;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 20px 32px;
+      text-align: center;
+      font-size: .8rem;
+      color: var(--muted-light);
+      margin-top: auto;
+    }
+    footer strong { color: var(--muted); }
+
+    /* ── RESPONSIVE ── */
     @media (max-width: 640px) {
+      header { padding: 0 16px; }
+      .hero-banner { padding: 28px 20px; }
+      .hero-banner h1 { font-size: 1.4rem; }
+      .app { padding: 0 16px; margin: 24px auto; }
       .form-grid { grid-template-columns: 1fr; }
       .stepper { flex-direction: column; }
       .step { border-right: none; border-bottom: 1px solid var(--border); }
       .step:last-child { border-bottom: none; }
+      .review-grid { grid-template-columns: 1fr; }
+      .review-item { border-right: none !important; }
+      .review-item:nth-last-child(-n+2) { border-bottom: 1px solid var(--border); }
+      .review-item:last-child { border-bottom: none; }
+      .result-url-box { flex-direction: column; }
+      .result-url-text { text-align: center; }
     }
   </style>
 </head>
 <body>
+
   <header>
-    <div class="logo">Must<span>Wants</span> <span style="font-weight:400;color:var(--muted)">/ Agent Page Generator</span></div>
-    <span class="header-badge">Real Estate Pro</span>
+    <div class="logo">
+      Must<span style="color:var(--text)">Wants</span><span class="logo-sep">/</span><span class="logo-app">Agent Page Generator</span>
+    </div>
+    <div class="header-right">
+      <span class="header-badge">Real Estate Pro</span>
+    </div>
   </header>
 
+  <div class="hero-banner">
+    <h1>Create Your Agent Profile Page</h1>
+    <p>Choose a template, fill in your details, upload photos, and generate a professional real estate page in seconds.</p>
+  </div>
+
   <div class="app">
-    <h1 class="page-title">Create Your Agent Profile Page</h1>
-    <p class="page-subtitle">Choose a template, fill in your details, upload photos, and generate your professional page in seconds.</p>
 
     <!-- STEPPER -->
-    <div class="stepper">
-      <div class="step active" data-step="1" onclick="goToStep(1)">
-        <div class="step-num">1</div>
-        <div class="step-label">Choose Version</div>
+    <div class="stepper" id="stepper">
+      <div class="step active clickable" data-step="1" onclick="stepperClick(1)">
+        <div class="step-num" id="snum-1">1</div>
+        <div>
+          <div class="step-label">Template</div>
+          <div class="step-sublabel">Choose a design</div>
+        </div>
       </div>
-      <div class="step" data-step="2" onclick="goToStep(2)">
-        <div class="step-num">2</div>
-        <div class="step-label">Your Details</div>
+      <div class="step future" data-step="2" onclick="stepperClick(2)">
+        <div class="step-num" id="snum-2">2</div>
+        <div>
+          <div class="step-label">Details</div>
+          <div class="step-sublabel">Your info</div>
+        </div>
       </div>
-      <div class="step" data-step="3" onclick="goToStep(3)">
-        <div class="step-num">3</div>
-        <div class="step-label">Upload Images</div>
+      <div class="step future" data-step="3" onclick="stepperClick(3)">
+        <div class="step-num" id="snum-3">3</div>
+        <div>
+          <div class="step-label">Photos</div>
+          <div class="step-sublabel">Upload images</div>
+        </div>
       </div>
-      <div class="step" data-step="4" onclick="goToStep(4)">
-        <div class="step-num">4</div>
-        <div class="step-label">Generate</div>
+      <div class="step future" data-step="4" onclick="stepperClick(4)">
+        <div class="step-num" id="snum-4">4</div>
+        <div>
+          <div class="step-label">Generate</div>
+          <div class="step-sublabel">Review & create</div>
+        </div>
       </div>
     </div>
 
-    <!-- STEP 1: VERSION -->
+    <!-- STEP 1: TEMPLATE -->
     <div class="panel active" id="panel-1">
       <div class="card">
         <div class="card-title">Select a Page Template</div>
+        <div class="card-subtitle">Each template is fully branded and mobile-friendly.</div>
         <div class="version-grid" id="version-grid">
-          <div style="color:var(--muted);padding:20px">Loading templates…</div>
+          <div class="empty-hint">Loading templates…</div>
         </div>
       </div>
       <div class="btn-row">
-        <button class="btn btn-primary" onclick="nextStep(1)" id="btn-next-1" disabled>Next: Your Details →</button>
+        <button class="btn btn-primary" onclick="nextStep(1)" id="btn-next-1" disabled>
+          Next: Your Details →
+        </button>
       </div>
     </div>
 
@@ -306,26 +708,27 @@
     <div class="panel" id="panel-2">
       <div class="card">
         <div class="card-title">Agent Information</div>
+        <div class="card-subtitle">Fields marked <span style="color:var(--red)">*</span> are required.</div>
         <div class="form-grid">
           <div class="form-group">
-            <label for="field-name">Full Name *</label>
-            <input type="text" id="field-name" placeholder="Jane Smith" required>
+            <label for="field-name">Full Name <span class="req">*</span></label>
+            <input type="text" id="field-name" placeholder="Jane Smith" required autocomplete="name">
           </div>
           <div class="form-group">
-            <label for="field-title">Professional Title *</label>
-            <input type="text" id="field-title" placeholder="REALTOR® | Luxury Home Specialist">
+            <label for="field-title">Professional Title</label>
+            <input type="text" id="field-title" placeholder="REALTOR® | Luxury Home Specialist" autocomplete="organization-title">
           </div>
           <div class="form-group">
             <label for="field-phone">Phone Number</label>
-            <input type="tel" id="field-phone" placeholder="(555) 123-4567">
+            <input type="tel" id="field-phone" placeholder="(555) 123-4567" autocomplete="tel">
           </div>
           <div class="form-group">
             <label for="field-email">Email Address</label>
-            <input type="email" id="field-email" placeholder="jane@realty.com">
+            <input type="email" id="field-email" placeholder="jane@realty.com" autocomplete="email">
           </div>
           <div class="form-group">
             <label for="field-website">Website URL</label>
-            <input type="url" id="field-website" placeholder="https://janesmithrealty.com">
+            <input type="url" id="field-website" placeholder="https://janesmithrealty.com" autocomplete="url">
           </div>
           <div class="form-group">
             <label for="field-license">License Number</label>
@@ -333,22 +736,27 @@
           </div>
           <div class="form-group full">
             <label for="field-bio">Bio / About Me</label>
-            <textarea id="field-bio" placeholder="Tell clients about your experience, passion for real estate, and what makes you the right agent for them…"></textarea>
+            <textarea id="field-bio" placeholder="Tell clients about your experience, passion for real estate, and what makes you the right agent for them…" oninput="updateBioCount()" maxlength="800"></textarea>
+            <div class="field-footer">
+              <span class="field-hint">Share your story — this appears on your profile page.</span>
+              <span class="char-count" id="bio-count">0 / 800</span>
+            </div>
           </div>
           <div class="form-group full">
             <label>Specialties</label>
             <div class="specialty-input-row">
-              <input type="text" id="specialty-input" placeholder="e.g. First-Time Buyers, Luxury Condos…" onkeydown="if(event.key==='Enter'){event.preventDefault();addSpecialty();}">
+              <input type="text" id="specialty-input" placeholder="e.g. First-Time Buyers, Luxury Condos…"
+                onkeydown="if(event.key==='Enter'){event.preventDefault();addSpecialty();}">
               <button class="btn-add-spec" onclick="addSpecialty()">+ Add</button>
             </div>
             <div class="specialty-tags" id="specialty-tags"></div>
-            <span class="field-hint">Press Enter or click + Add after each specialty.</span>
+            <span class="field-hint" style="margin-top:6px">Press Enter or click + Add after each specialty.</span>
           </div>
         </div>
       </div>
       <div class="btn-row">
         <button class="btn btn-outline" onclick="goToStep(1)">← Back</button>
-        <button class="btn btn-primary" onclick="nextStep(2)" id="btn-next-2">Next: Upload Images →</button>
+        <button class="btn btn-primary" onclick="nextStep(2)">Next: Upload Photos →</button>
       </div>
     </div>
 
@@ -356,6 +764,7 @@
     <div class="panel" id="panel-3">
       <div class="card">
         <div class="card-title">Agent Profile Photo</div>
+        <div class="card-subtitle">A professional headshot builds trust with clients.</div>
         <div class="upload-zone" id="zone-agent"
           ondragover="onDragOver(event,'zone-agent')"
           ondragleave="onDragLeave('zone-agent')"
@@ -364,7 +773,7 @@
                  onchange="handleFileSelect('agent', this.files)">
           <div class="upload-icon">📷</div>
           <div class="upload-label">Click or drag your headshot here</div>
-          <div class="upload-hint">JPEG, PNG, WebP or GIF · Max 10MB</div>
+          <div class="upload-hint">JPEG, PNG, WebP or GIF · Max 10 MB</div>
         </div>
         <div class="upload-progress" id="prog-agent"><div class="upload-progress-bar" id="progbar-agent"></div></div>
         <div class="upload-status" id="status-agent"></div>
@@ -372,7 +781,10 @@
       </div>
 
       <div class="card">
-        <div class="card-title">Property / Listing Images <span style="color:var(--muted);font-weight:400;font-size:.85rem">(up to 6)</span></div>
+        <div class="card-title">Property / Listing Photos
+          <span style="color:var(--muted);font-weight:400;font-size:.82rem;margin-left:6px">(optional, up to 6)</span>
+        </div>
+        <div class="card-subtitle">Showcase your best listings directly on your profile.</div>
         <div class="upload-zone" id="zone-props"
           ondragover="onDragOver(event,'zone-props')"
           ondragleave="onDragLeave('zone-props')"
@@ -381,7 +793,7 @@
                  multiple onchange="handleFileSelect('propertyImages', this.files)">
           <div class="upload-icon">🏡</div>
           <div class="upload-label">Click or drag property photos here</div>
-          <div class="upload-hint">JPEG, PNG, WebP or GIF · Max 10MB each · Up to 6 photos</div>
+          <div class="upload-hint">JPEG, PNG, WebP or GIF · Max 10 MB each · Up to 6 photos</div>
         </div>
         <div class="upload-progress" id="prog-props"><div class="upload-progress-bar" id="progbar-props"></div></div>
         <div class="upload-status" id="status-props"></div>
@@ -394,52 +806,60 @@
       </div>
     </div>
 
-    <!-- STEP 4: GENERATE -->
+    <!-- STEP 4: REVIEW & GENERATE -->
     <div class="panel" id="panel-4">
       <div class="card" id="review-card">
         <div class="card-title">Review Your Page</div>
-        <div id="review-content"></div>
+        <div class="card-subtitle">Double-check your details before generating.</div>
+        <div class="review-grid" id="review-content"></div>
       </div>
       <div class="btn-row">
         <button class="btn btn-outline" onclick="goToStep(3)">← Back</button>
-        <button class="btn btn-success" onclick="generatePage()" id="btn-generate">✨ Generate My Page</button>
+        <button class="btn btn-success" onclick="generatePage()" id="btn-generate">
+          ✨ Generate My Page
+        </button>
       </div>
     </div>
 
-    <!-- RESULT (shown after generation) -->
+    <!-- RESULT -->
     <div class="panel" id="panel-result">
       <div class="card result-card">
         <div class="result-icon">🎉</div>
         <div class="result-title">Your page is ready!</div>
         <div class="result-subtitle" id="result-version-label"></div>
+        <div class="result-url-box">
+          <span class="result-url-text" id="result-url-text"></span>
+          <button class="btn-copy" id="btn-copy" onclick="copyLink()">Copy Link</button>
+        </div>
         <div class="result-actions">
-          <a class="btn btn-primary" id="result-view-link" href="#" target="_blank">View Your Page</a>
+          <a class="btn btn-primary" id="result-view-link" href="#" target="_blank">Open Page ↗</a>
           <button class="btn btn-outline" onclick="startOver()">Create Another →</button>
         </div>
       </div>
     </div>
-  </div>
+
+  </div><!-- /.app -->
 
   <!-- TOAST -->
   <div class="toast-container" id="toast-container"></div>
 
+  <footer>
+    <strong>MustWants</strong> Agent Page Generator &nbsp;·&nbsp; Generated pages are hosted locally on this server.
+  </footer>
+
   <script>
-    // ──────────────────────────────────────────────
-    // State
-    // ──────────────────────────────────────────────
+    // ── State ──
     const state = {
       selectedVersion: null,
       versions: [],
-      uploadedFiles: {
-        agentPhoto: null,       // { url, filename }
-        propertyImages: []      // [{ url, filename }]
-      },
-      currentStep: 1
+      uploadedFiles: { agentPhoto: null, propertyImages: [] },
+      currentStep: 1,
+      maxReachedStep: 1,
+      generatedUrl: null,
     };
+    const specialties = [];
 
-    // ──────────────────────────────────────────────
-    // Init
-    // ──────────────────────────────────────────────
+    // ── Init ──
     async function init() {
       try {
         const res = await fetch('/api/versions');
@@ -449,26 +869,24 @@
         renderVersionGrid();
       } catch (e) {
         document.getElementById('version-grid').innerHTML =
-          `<div style="color:var(--red)">Failed to load templates: ${e.message}</div>`;
+          `<div style="color:var(--red);padding:16px">Failed to load templates: ${esc(e.message)}</div>`;
       }
     }
 
-    // ──────────────────────────────────────────────
-    // Version grid
-    // ──────────────────────────────────────────────
+    // ── Version grid ──
     function renderVersionGrid() {
       const grid = document.getElementById('version-grid');
       grid.innerHTML = state.versions.map(v => `
         <div class="version-card${state.selectedVersion === v.id ? ' selected' : ''}"
              onclick="selectVersion('${v.id}')" data-vid="${v.id}">
-          <img class="version-thumb" src="${v.thumbnail}" alt="${v.name} thumbnail"
-               onerror="this.style.background='#e5e7eb';this.removeAttribute('onerror')">
+          <img class="version-thumb" src="${v.thumbnail}" alt="${esc(v.name)} preview"
+               onerror="this.style.background='#e5e7eb';this.removeAttribute('src')">
           <div class="version-info">
             <div class="version-name">
-              ${v.name}
+              ${esc(v.name)}
               <span class="version-check">✓</span>
             </div>
-            <div class="version-desc">${v.description}</div>
+            <div class="version-desc">${esc(v.description)}</div>
           </div>
         </div>
       `).join('');
@@ -480,19 +898,33 @@
       document.getElementById('btn-next-1').disabled = false;
     }
 
-    // ──────────────────────────────────────────────
-    // Step navigation
-    // ──────────────────────────────────────────────
+    // ── Stepper ──
+    function stepperClick(n) {
+      // Allow going back to any visited step; block forward jumps
+      if (n <= state.maxReachedStep) {
+        goToStep(n);
+      }
+    }
+
     function goToStep(n) {
       state.currentStep = n;
+      if (n > state.maxReachedStep) state.maxReachedStep = n;
+
       document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
       document.getElementById(`panel-${n}`)?.classList.add('active');
 
       document.querySelectorAll('.step').forEach(s => {
         const sn = parseInt(s.dataset.step);
-        s.classList.toggle('active', sn === n);
-        s.classList.toggle('done', sn < n);
-        s.querySelector('.step-num').textContent = sn < n ? '✓' : sn;
+        s.classList.remove('active', 'done', 'future', 'clickable');
+        if (sn === n) {
+          s.classList.add('active', 'clickable');
+        } else if (sn < n || sn <= state.maxReachedStep) {
+          s.classList.add(sn < n ? 'done' : 'done', 'clickable');
+        } else {
+          s.classList.add('future');
+        }
+        const numEl = document.getElementById(`snum-${sn}`);
+        if (numEl) numEl.textContent = sn < n ? '✓' : sn;
       });
 
       if (n === 4) renderReview();
@@ -501,26 +933,30 @@
 
     function nextStep(current) {
       if (current === 1) {
-        if (!state.selectedVersion) { toast('Please select a template.', 'error'); return; }
+        if (!state.selectedVersion) { toast('Please select a template first.', 'error'); return; }
         goToStep(2);
       } else if (current === 2) {
-        const name = document.getElementById('field-name').value.trim();
-        if (!name) { toast('Please enter your name.', 'error'); document.getElementById('field-name').focus(); return; }
+        const nameEl = document.getElementById('field-name');
+        const name = nameEl.value.trim();
+        if (!name) {
+          nameEl.classList.add('error');
+          nameEl.focus();
+          toast('Please enter your full name.', 'error');
+          nameEl.addEventListener('input', () => nameEl.classList.remove('error'), { once: true });
+          return;
+        }
         goToStep(3);
       } else if (current === 3) {
         goToStep(4);
       }
     }
 
-    // ──────────────────────────────────────────────
-    // Specialties
-    // ──────────────────────────────────────────────
-    const specialties = [];
-
+    // ── Specialties ──
     function addSpecialty() {
       const input = document.getElementById('specialty-input');
       const val = input.value.trim();
-      if (!val || specialties.includes(val)) { input.value = ''; return; }
+      if (!val) return;
+      if (specialties.includes(val)) { input.select(); return; }
       specialties.push(val);
       input.value = '';
       renderSpecialties();
@@ -533,22 +969,27 @@
 
     function renderSpecialties() {
       document.getElementById('specialty-tags').innerHTML = specialties
-        .map((s, i) => `<span class="spec-tag">${esc(s)} <button onclick="removeSpecialty(${i})" title="Remove">×</button></span>`)
+        .map((s, i) => `<span class="spec-tag">${esc(s)}<button onclick="removeSpecialty(${i})" title="Remove" aria-label="Remove ${esc(s)}">×</button></span>`)
         .join('');
     }
 
-    // ──────────────────────────────────────────────
-    // Image upload
-    // ──────────────────────────────────────────────
+    // ── Bio character count ──
+    function updateBioCount() {
+      const ta = document.getElementById('field-bio');
+      const countEl = document.getElementById('bio-count');
+      const len = ta.value.length;
+      countEl.textContent = `${len} / 800`;
+      countEl.classList.toggle('warn', len > 700);
+    }
+
+    // ── Image upload ──
     function onDragOver(e, zoneId) {
       e.preventDefault();
       document.getElementById(zoneId).classList.add('dragover');
     }
-
     function onDragLeave(zoneId) {
       document.getElementById(zoneId).classList.remove('dragover');
     }
-
     function onDrop(e, field) {
       e.preventDefault();
       const zoneId = field === 'agent' ? 'zone-agent' : 'zone-props';
@@ -563,11 +1004,11 @@
       const progEl = document.getElementById(isAgent ? 'prog-agent' : 'prog-props');
       const progBar = document.getElementById(isAgent ? 'progbar-agent' : 'progbar-props');
       const statusEl = document.getElementById(isAgent ? 'status-agent' : 'status-props');
+      const zone = document.getElementById(isAgent ? 'zone-agent' : 'zone-props');
 
-      // Validate counts
       const fileArr = Array.from(files);
       if (isAgent && fileArr.length > 1) {
-        toast('Only one agent photo allowed. Using the first file.', 'info');
+        toast('Only one agent photo allowed — using the first.', 'info');
         fileArr.splice(1);
       }
       const currentProps = state.uploadedFiles.propertyImages.length;
@@ -578,34 +1019,29 @@
         fileArr.splice(allowed);
       }
 
-      // Validate types client-side
-      const allowed_types = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+      const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
       for (const f of fileArr) {
-        if (!allowed_types.includes(f.type)) {
-          toast(`"${f.name}" is not a supported image type.`, 'error');
+        if (!allowedTypes.includes(f.type)) {
+          toast(`"${esc(f.name)}" is not a supported image type.`, 'error');
           return;
         }
         if (f.size > 10 * 1024 * 1024) {
-          toast(`"${f.name}" exceeds the 10MB size limit.`, 'error');
+          toast(`"${esc(f.name)}" exceeds the 10 MB size limit.`, 'error');
           return;
         }
       }
 
-      // Show progress
       progEl.style.display = 'block';
       progBar.style.width = '10%';
       statusEl.textContent = 'Uploading…';
 
       const formData = new FormData();
-      for (const f of fileArr) {
-        formData.append(isAgent ? 'agentPhoto' : 'propertyImages', f);
-      }
+      for (const f of fileArr) formData.append(isAgent ? 'agentPhoto' : 'propertyImages', f);
 
       try {
-        // Animate progress
         let prog = 10;
         const ticker = setInterval(() => {
-          prog = Math.min(prog + Math.random() * 20, 85);
+          prog = Math.min(prog + Math.random() * 18, 85);
           progBar.style.width = `${prog}%`;
         }, 250);
 
@@ -618,30 +1054,30 @@
 
         if (isAgent && data.files.agentPhoto) {
           state.uploadedFiles.agentPhoto = data.files.agentPhoto;
+          zone.classList.add('has-file');
           toast('Profile photo uploaded!', 'success');
         }
         if (!isAgent && data.files.propertyImages) {
           state.uploadedFiles.propertyImages.push(...data.files.propertyImages);
-          toast(`${data.files.propertyImages.length} property image(s) uploaded!`, 'success');
+          if (state.uploadedFiles.propertyImages.length >= 6) zone.classList.add('has-file');
+          toast(`${data.files.propertyImages.length} photo(s) uploaded!`, 'success');
         }
 
         renderPreviews();
         statusEl.textContent = 'Upload complete ✓';
-        setTimeout(() => { progEl.style.display = 'none'; statusEl.textContent = ''; }, 2000);
+        setTimeout(() => { progEl.style.display = 'none'; statusEl.textContent = ''; }, 2500);
       } catch (err) {
         progBar.style.width = '0%';
         progEl.style.display = 'none';
         statusEl.textContent = '';
-        toast(`Upload failed: ${err.message}`, 'error');
+        toast(`Upload failed: ${esc(err.message)}`, 'error');
       }
 
-      // Reset file inputs
       document.getElementById('upload-agent').value = '';
       document.getElementById('upload-props').value = '';
     }
 
     function renderPreviews() {
-      // Agent photo
       const agentGrid = document.getElementById('preview-agent');
       if (state.uploadedFiles.agentPhoto) {
         agentGrid.innerHTML = `
@@ -652,9 +1088,9 @@
           </div>`;
       } else {
         agentGrid.innerHTML = '';
+        document.getElementById('zone-agent').classList.remove('has-file');
       }
 
-      // Property images
       const propsGrid = document.getElementById('preview-props');
       if (state.uploadedFiles.propertyImages.length > 0) {
         propsGrid.innerHTML = state.uploadedFiles.propertyImages.map((url, i) => `
@@ -665,6 +1101,7 @@
           </div>`).join('');
       } else {
         propsGrid.innerHTML = '';
+        document.getElementById('zone-props').classList.remove('has-file');
       }
     }
 
@@ -677,9 +1114,7 @@
       renderPreviews();
     }
 
-    // ──────────────────────────────────────────────
-    // Review
-    // ──────────────────────────────────────────────
+    // ── Review ──
     function renderReview() {
       const v = state.versions.find(x => x.id === state.selectedVersion);
       const name = document.getElementById('field-name').value.trim();
@@ -688,52 +1123,40 @@
       const email = document.getElementById('field-email').value.trim();
       const website = document.getElementById('field-website').value.trim();
       const license = document.getElementById('field-license').value.trim();
-      const bio = document.getElementById('field-bio').value.trim();
 
-      document.getElementById('review-content').innerHTML = `
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
-          <div>
-            <div style="font-size:.75rem;font-weight:700;text-transform:uppercase;color:var(--muted);margin-bottom:4px">Template</div>
-            <div style="font-weight:600">${esc(v ? v.name : '')}</div>
-          </div>
-          <div>
-            <div style="font-size:.75rem;font-weight:700;text-transform:uppercase;color:var(--muted);margin-bottom:4px">Name</div>
-            <div style="font-weight:600">${esc(name) || '<em style="color:var(--muted)">Not set</em>'}</div>
-          </div>
-          <div>
-            <div style="font-size:.75rem;font-weight:700;text-transform:uppercase;color:var(--muted);margin-bottom:4px">Title</div>
-            <div>${esc(title) || '<em style="color:var(--muted)">Not set</em>'}</div>
-          </div>
-          <div>
-            <div style="font-size:.75rem;font-weight:700;text-transform:uppercase;color:var(--muted);margin-bottom:4px">Phone</div>
-            <div>${esc(phone) || '<em style="color:var(--muted)">Not set</em>'}</div>
-          </div>
-          <div>
-            <div style="font-size:.75rem;font-weight:700;text-transform:uppercase;color:var(--muted);margin-bottom:4px">Email</div>
-            <div>${esc(email) || '<em style="color:var(--muted)">Not set</em>'}</div>
-          </div>
-          <div>
-            <div style="font-size:.75rem;font-weight:700;text-transform:uppercase;color:var(--muted);margin-bottom:4px">Specialties</div>
-            <div>${specialties.length > 0 ? specialties.map(s => `<span style="background:#e0f2fe;color:#0369a1;padding:2px 8px;border-radius:100px;font-size:.8rem;margin-right:4px">${esc(s)}</span>`).join('') : '<em style="color:var(--muted)">None</em>'}</div>
-          </div>
-          <div>
-            <div style="font-size:.75rem;font-weight:700;text-transform:uppercase;color:var(--muted);margin-bottom:4px">Profile Photo</div>
-            <div>${state.uploadedFiles.agentPhoto ? '✅ Uploaded' : '<em style="color:var(--muted)">None</em>'}</div>
-          </div>
-          <div>
-            <div style="font-size:.75rem;font-weight:700;text-transform:uppercase;color:var(--muted);margin-bottom:4px">Property Images</div>
-            <div>${state.uploadedFiles.propertyImages.length > 0 ? `✅ ${state.uploadedFiles.propertyImages.length} image(s)` : '<em style="color:var(--muted)">None</em>'}</div>
-          </div>
+      const row = (label, value, full) => `
+        <div class="review-item${full ? ' full' : ''}">
+          <div class="review-label">${label}</div>
+          <div class="review-value">${value || '<em>Not set</em>'}</div>
         </div>`;
+
+      const specHtml = specialties.length > 0
+        ? specialties.map(s => `<span style="background:var(--blue-light);color:var(--blue);padding:2px 9px;border-radius:100px;font-size:.78rem;font-weight:600;margin-right:4px;display:inline-block;margin-bottom:3px">${esc(s)}</span>`).join('')
+        : '';
+      const photoHtml = state.uploadedFiles.agentPhoto
+        ? `<span style="color:var(--green);font-weight:600">✓ Uploaded</span>` : '';
+      const propsHtml = state.uploadedFiles.propertyImages.length > 0
+        ? `<span style="color:var(--green);font-weight:600">✓ ${state.uploadedFiles.propertyImages.length} photo(s)</span>` : '';
+
+      document.getElementById('review-content').innerHTML = [
+        row('Template', esc(v ? v.name : '')),
+        row('Name', esc(name)),
+        row('Title', esc(title)),
+        row('Phone', esc(phone)),
+        row('Email', esc(email)),
+        row('Website', esc(website)),
+        row('Specialties', specHtml || ''),
+        row('License', esc(license)),
+        row('Profile Photo', photoHtml || ''),
+        row('Listing Photos', propsHtml || ''),
+      ].join('');
     }
 
-    // ──────────────────────────────────────────────
-    // Generate
-    // ──────────────────────────────────────────────
+    // ── Generate ──
     async function generatePage() {
       const btn = document.getElementById('btn-generate');
       btn.disabled = true;
-      btn.textContent = '⏳ Generating…';
+      btn.innerHTML = '⏳ Generating…';
 
       const agentData = {
         name: document.getElementById('field-name').value.trim(),
@@ -745,67 +1168,108 @@
         bio: document.getElementById('field-bio').value.trim(),
         specialties: [...specialties],
         agentPhoto: state.uploadedFiles.agentPhoto || '',
-        propertyImages: state.uploadedFiles.propertyImages
+        propertyImages: state.uploadedFiles.propertyImages,
       };
 
       try {
         const res = await fetch('/api/generate', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ version: state.selectedVersion, agentData })
+          body: JSON.stringify({ version: state.selectedVersion, agentData }),
         });
         const data = await res.json();
         if (!data.success) throw new Error(data.error);
 
-        // Show result
+        const fullUrl = window.location.origin + data.url;
+        state.generatedUrl = fullUrl;
+
         document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
         document.getElementById('panel-result').classList.add('active');
         document.getElementById('result-view-link').href = data.url;
+        document.getElementById('result-url-text').textContent = fullUrl;
         document.getElementById('result-version-label').textContent =
           `Generated with the "${data.version.name}" template`;
         toast('Page generated successfully!', 'success');
       } catch (e) {
-        toast(`Generation failed: ${e.message}`, 'error');
+        toast(`Generation failed: ${esc(e.message)}`, 'error');
       } finally {
         btn.disabled = false;
-        btn.textContent = '✨ Generate My Page';
+        btn.innerHTML = '✨ Generate My Page';
       }
     }
 
+    // ── Copy link ──
+    async function copyLink() {
+      const btn = document.getElementById('btn-copy');
+      try {
+        await navigator.clipboard.writeText(state.generatedUrl || '');
+        btn.textContent = '✓ Copied!';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.textContent = 'Copy Link';
+          btn.classList.remove('copied');
+        }, 2000);
+      } catch {
+        // Fallback for older browsers
+        const ta = document.createElement('textarea');
+        ta.value = state.generatedUrl || '';
+        ta.style.cssText = 'position:fixed;opacity:0';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        ta.remove();
+        btn.textContent = '✓ Copied!';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = 'Copy Link'; btn.classList.remove('copied'); }, 2000);
+      }
+    }
+
+    // ── Start over ──
     function startOver() {
       state.selectedVersion = null;
       state.uploadedFiles = { agentPhoto: null, propertyImages: [] };
+      state.maxReachedStep = 1;
+      state.generatedUrl = null;
       specialties.length = 0;
       renderSpecialties();
       renderPreviews();
       renderVersionGrid();
       document.getElementById('btn-next-1').disabled = true;
+      document.getElementById('bio-count').textContent = '0 / 800';
       ['field-name','field-title','field-phone','field-email','field-website','field-license','field-bio']
         .forEach(id => { document.getElementById(id).value = ''; });
       goToStep(1);
     }
 
-    // ──────────────────────────────────────────────
-    // Toast
-    // ──────────────────────────────────────────────
+    // ── Toast ──
     function toast(msg, type = 'info') {
       const el = document.createElement('div');
       el.className = `toast ${type}`;
-      el.innerHTML = `<span>${esc(msg)}</span>`;
-      document.getElementById('toast-container').appendChild(el);
-      setTimeout(() => el.remove(), 4000);
+      el.innerHTML = `<span>${esc(msg)}</span><button class="toast-close" onclick="dismissToast(this)" aria-label="Dismiss">×</button>`;
+      const container = document.getElementById('toast-container');
+      container.appendChild(el);
+      const timer = setTimeout(() => dismissToast(el.querySelector('.toast-close')), 4500);
+      el._timer = timer;
     }
 
-    // ──────────────────────────────────────────────
-    // Helpers
-    // ──────────────────────────────────────────────
+    function dismissToast(btn) {
+      const el = btn.closest ? btn.closest('.toast') : btn.parentElement;
+      if (!el || el._dismissed) return;
+      el._dismissed = true;
+      clearTimeout(el._timer);
+      el.style.animation = 'slideOut .2s ease forwards';
+      setTimeout(() => el.remove(), 200);
+    }
+
+    // ── Helpers ──
     function esc(str) {
-      return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+      return String(str || '')
+        .replace(/&/g,'&amp;')
+        .replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;')
+        .replace(/"/g,'&quot;');
     }
 
-    // ──────────────────────────────────────────────
-    // Boot
-    // ──────────────────────────────────────────────
     init();
   </script>
 </body>
