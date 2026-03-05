@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agent Page Generator – MustWants</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --blue: #0066cc;
+      --blue-dark: #0051a3;
+      --green: #16a34a;
+      --red: #dc2626;
+      --border: #e5e7eb;
+      --bg: #f9fafb;
+      --text: #111827;
+      --muted: #6b7280;
+      --radius: 8px;
+    }
+    body { font-family: system-ui, -apple-system, 'Segoe UI', Arial, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+    /* HEADER */
+    header {
+      background: #fff;
+      border-bottom: 1px solid var(--border);
+      padding: 0 32px;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 64px;
+    }
+    .logo { font-size: 1.2rem; font-weight: 700; color: var(--blue); }
+    .logo span { color: var(--text); }
+    .header-badge {
+      font-size: .75rem; background: #e0f2fe; color: #0369a1;
+      padding: 4px 10px; border-radius: 100px; font-weight: 600;
+    }
+
+    /* LAYOUT */
+    .app { max-width: 1100px; margin: 40px auto; padding: 0 24px; }
+    h1.page-title { font-size: 1.75rem; font-weight: 800; margin-bottom: 6px; }
+    .page-subtitle { color: var(--muted); margin-bottom: 40px; }
+
+    /* STEPPER */
+    .stepper {
+      display: flex; gap: 0; margin-bottom: 40px;
+      border: 1px solid var(--border); border-radius: var(--radius);
+      overflow: hidden; background: #fff;
+    }
+    .step {
+      flex: 1; padding: 16px 20px;
+      display: flex; align-items: center; gap: 12px;
+      border-right: 1px solid var(--border);
+      cursor: pointer; transition: background .15s;
+      user-select: none;
+    }
+    .step:last-child { border-right: none; }
+    .step.active { background: var(--blue); color: #fff; }
+    .step.done { background: #f0fdf4; }
+    .step-num {
+      width: 28px; height: 28px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: .85rem; font-weight: 700; flex-shrink: 0;
+      background: rgba(0,0,0,.1); color: inherit;
+    }
+    .step.active .step-num { background: rgba(255,255,255,.25); }
+    .step.done .step-num { background: var(--green); color: #fff; }
+    .step-label { font-size: .9rem; font-weight: 600; }
+
+    /* PANELS */
+    .panel { display: none; }
+    .panel.active { display: block; }
+
+    /* CARDS */
+    .card {
+      background: #fff; border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 28px;
+      margin-bottom: 24px;
+    }
+    .card-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 18px; }
+
+    /* VERSION GRID */
+    .version-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
+    .version-card {
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      cursor: pointer;
+      transition: border-color .15s, box-shadow .15s;
+    }
+    .version-card:hover { border-color: var(--blue); box-shadow: 0 4px 16px rgba(0,102,204,.12); }
+    .version-card.selected { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(0,102,204,.18); }
+    .version-thumb { width: 100%; height: 160px; object-fit: cover; display: block; background: #f0f0f0; }
+    .version-info { padding: 16px; }
+    .version-name { font-weight: 700; margin-bottom: 6px; display: flex; align-items: center; justify-content: space-between; }
+    .version-desc { font-size: .85rem; color: var(--muted); line-height: 1.5; }
+    .version-check {
+      width: 20px; height: 20px; border-radius: 50%;
+      background: var(--blue); color: #fff;
+      display: none; align-items: center; justify-content: center;
+      font-size: .75rem; flex-shrink: 0;
+    }
+    .version-card.selected .version-check { display: flex; }
+
+    /* FORM */
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-group.full { grid-column: 1 / -1; }
+    label { font-size: .85rem; font-weight: 600; color: var(--text); }
+    input, textarea {
+      border: 1px solid var(--border); border-radius: 6px;
+      padding: 10px 12px; font-size: .95rem; font-family: inherit;
+      color: var(--text); outline: none; transition: border-color .15s;
+      width: 100%;
+    }
+    input:focus, textarea:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(0,102,204,.1); }
+    textarea { min-height: 100px; resize: vertical; }
+    .field-hint { font-size: .78rem; color: var(--muted); }
+
+    /* SPECIALTIES */
+    .specialty-input-row { display: flex; gap: 10px; }
+    .specialty-input-row input { flex: 1; }
+    .btn-add-spec {
+      padding: 10px 18px; background: var(--blue); color: #fff;
+      border: none; border-radius: 6px; font-size: .9rem;
+      cursor: pointer; font-weight: 600; white-space: nowrap;
+    }
+    .btn-add-spec:hover { background: var(--blue-dark); }
+    .specialty-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+    .spec-tag {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: #e0f2fe; color: #0369a1;
+      padding: 5px 12px; border-radius: 100px;
+      font-size: .82rem; font-weight: 600;
+    }
+    .spec-tag button {
+      border: none; background: none; cursor: pointer;
+      color: #0369a1; font-size: 1rem; line-height: 1;
+      padding: 0; margin: 0;
+    }
+
+    /* IMAGE UPLOAD */
+    .upload-zone {
+      border: 2px dashed var(--border);
+      border-radius: var(--radius);
+      padding: 40px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color .2s, background .2s;
+      position: relative;
+    }
+    .upload-zone:hover, .upload-zone.dragover {
+      border-color: var(--blue);
+      background: rgba(0,102,204,.04);
+    }
+    .upload-zone input[type="file"] {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      opacity: 0; cursor: pointer;
+    }
+    .upload-icon { font-size: 2.5rem; margin-bottom: 10px; }
+    .upload-label { font-weight: 600; margin-bottom: 4px; }
+    .upload-hint { font-size: .82rem; color: var(--muted); }
+
+    /* IMAGE PREVIEW GRID */
+    .image-preview-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 12px;
+      margin-top: 16px;
+    }
+    .preview-item {
+      position: relative;
+      border-radius: 6px;
+      overflow: hidden;
+      aspect-ratio: 1;
+      background: #f0f0f0;
+    }
+    .preview-item img {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+    }
+    .preview-item .remove-btn {
+      position: absolute; top: 4px; right: 4px;
+      width: 22px; height: 22px;
+      background: rgba(0,0,0,.6); color: #fff;
+      border: none; border-radius: 50%;
+      font-size: .8rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      line-height: 1;
+    }
+    .preview-item .img-label {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      background: rgba(0,0,0,.55); color: #fff;
+      font-size: .65rem; text-align: center; padding: 3px;
+    }
+
+    /* UPLOAD PROGRESS */
+    .upload-progress {
+      display: none;
+      margin-top: 12px;
+      background: #f0f0f0;
+      border-radius: 100px; overflow: hidden; height: 6px;
+    }
+    .upload-progress-bar {
+      height: 100%; background: var(--blue);
+      transition: width .3s ease;
+      width: 0%;
+    }
+    .upload-status { font-size: .82rem; color: var(--muted); margin-top: 6px; }
+
+    /* TOAST */
+    .toast-container {
+      position: fixed; bottom: 24px; right: 24px;
+      display: flex; flex-direction: column; gap: 10px;
+      z-index: 9999;
+    }
+    .toast {
+      padding: 12px 18px; border-radius: 8px;
+      font-size: .9rem; font-weight: 600;
+      box-shadow: 0 4px 16px rgba(0,0,0,.15);
+      animation: slideIn .25s ease;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .toast.success { background: var(--green); color: #fff; }
+    .toast.error { background: var(--red); color: #fff; }
+    .toast.info { background: var(--blue); color: #fff; }
+    @keyframes slideIn { from { transform: translateX(60px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+    /* BUTTONS */
+    .btn-row { display: flex; gap: 12px; justify-content: flex-end; margin-top: 28px; }
+    .btn {
+      padding: 12px 28px; border-radius: 6px; font-size: .95rem;
+      font-weight: 700; cursor: pointer; border: none; transition: all .15s;
+    }
+    .btn-primary { background: var(--blue); color: #fff; }
+    .btn-primary:hover { background: var(--blue-dark); }
+    .btn-primary:disabled { background: #93c5fd; cursor: not-allowed; }
+    .btn-outline { background: #fff; color: var(--text); border: 2px solid var(--border); }
+    .btn-outline:hover { border-color: #aaa; }
+    .btn-success { background: var(--green); color: #fff; }
+    .btn-success:hover { background: #15803d; }
+
+    /* RESULT */
+    .result-card {
+      text-align: center; padding: 48px 32px;
+    }
+    .result-icon { font-size: 4rem; margin-bottom: 20px; }
+    .result-title { font-size: 1.4rem; font-weight: 800; margin-bottom: 10px; }
+    .result-subtitle { color: var(--muted); margin-bottom: 32px; }
+    .result-actions { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+
+    /* RESPONSIVE */
+    @media (max-width: 640px) {
+      .form-grid { grid-template-columns: 1fr; }
+      .stepper { flex-direction: column; }
+      .step { border-right: none; border-bottom: 1px solid var(--border); }
+      .step:last-child { border-bottom: none; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">Must<span>Wants</span> <span style="font-weight:400;color:var(--muted)">/ Agent Page Generator</span></div>
+    <span class="header-badge">Real Estate Pro</span>
+  </header>
+
+  <div class="app">
+    <h1 class="page-title">Create Your Agent Profile Page</h1>
+    <p class="page-subtitle">Choose a template, fill in your details, upload photos, and generate your professional page in seconds.</p>
+
+    <!-- STEPPER -->
+    <div class="stepper">
+      <div class="step active" data-step="1" onclick="goToStep(1)">
+        <div class="step-num">1</div>
+        <div class="step-label">Choose Version</div>
+      </div>
+      <div class="step" data-step="2" onclick="goToStep(2)">
+        <div class="step-num">2</div>
+        <div class="step-label">Your Details</div>
+      </div>
+      <div class="step" data-step="3" onclick="goToStep(3)">
+        <div class="step-num">3</div>
+        <div class="step-label">Upload Images</div>
+      </div>
+      <div class="step" data-step="4" onclick="goToStep(4)">
+        <div class="step-num">4</div>
+        <div class="step-label">Generate</div>
+      </div>
+    </div>
+
+    <!-- STEP 1: VERSION -->
+    <div class="panel active" id="panel-1">
+      <div class="card">
+        <div class="card-title">Select a Page Template</div>
+        <div class="version-grid" id="version-grid">
+          <div style="color:var(--muted);padding:20px">Loading templates…</div>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="nextStep(1)" id="btn-next-1" disabled>Next: Your Details →</button>
+      </div>
+    </div>
+
+    <!-- STEP 2: DETAILS -->
+    <div class="panel" id="panel-2">
+      <div class="card">
+        <div class="card-title">Agent Information</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="field-name">Full Name *</label>
+            <input type="text" id="field-name" placeholder="Jane Smith" required>
+          </div>
+          <div class="form-group">
+            <label for="field-title">Professional Title *</label>
+            <input type="text" id="field-title" placeholder="REALTOR® | Luxury Home Specialist">
+          </div>
+          <div class="form-group">
+            <label for="field-phone">Phone Number</label>
+            <input type="tel" id="field-phone" placeholder="(555) 123-4567">
+          </div>
+          <div class="form-group">
+            <label for="field-email">Email Address</label>
+            <input type="email" id="field-email" placeholder="jane@realty.com">
+          </div>
+          <div class="form-group">
+            <label for="field-website">Website URL</label>
+            <input type="url" id="field-website" placeholder="https://janesmithrealty.com">
+          </div>
+          <div class="form-group">
+            <label for="field-license">License Number</label>
+            <input type="text" id="field-license" placeholder="DRE #01234567">
+          </div>
+          <div class="form-group full">
+            <label for="field-bio">Bio / About Me</label>
+            <textarea id="field-bio" placeholder="Tell clients about your experience, passion for real estate, and what makes you the right agent for them…"></textarea>
+          </div>
+          <div class="form-group full">
+            <label>Specialties</label>
+            <div class="specialty-input-row">
+              <input type="text" id="specialty-input" placeholder="e.g. First-Time Buyers, Luxury Condos…" onkeydown="if(event.key==='Enter'){event.preventDefault();addSpecialty();}">
+              <button class="btn-add-spec" onclick="addSpecialty()">+ Add</button>
+            </div>
+            <div class="specialty-tags" id="specialty-tags"></div>
+            <span class="field-hint">Press Enter or click + Add after each specialty.</span>
+          </div>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-outline" onclick="goToStep(1)">← Back</button>
+        <button class="btn btn-primary" onclick="nextStep(2)" id="btn-next-2">Next: Upload Images →</button>
+      </div>
+    </div>
+
+    <!-- STEP 3: IMAGES -->
+    <div class="panel" id="panel-3">
+      <div class="card">
+        <div class="card-title">Agent Profile Photo</div>
+        <div class="upload-zone" id="zone-agent"
+          ondragover="onDragOver(event,'zone-agent')"
+          ondragleave="onDragLeave('zone-agent')"
+          ondrop="onDrop(event,'agent')">
+          <input type="file" id="upload-agent" accept="image/jpeg,image/png,image/webp,image/gif"
+                 onchange="handleFileSelect('agent', this.files)">
+          <div class="upload-icon">📷</div>
+          <div class="upload-label">Click or drag your headshot here</div>
+          <div class="upload-hint">JPEG, PNG, WebP or GIF · Max 10MB</div>
+        </div>
+        <div class="upload-progress" id="prog-agent"><div class="upload-progress-bar" id="progbar-agent"></div></div>
+        <div class="upload-status" id="status-agent"></div>
+        <div class="image-preview-grid" id="preview-agent"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Property / Listing Images <span style="color:var(--muted);font-weight:400;font-size:.85rem">(up to 6)</span></div>
+        <div class="upload-zone" id="zone-props"
+          ondragover="onDragOver(event,'zone-props')"
+          ondragleave="onDragLeave('zone-props')"
+          ondrop="onDrop(event,'propertyImages')">
+          <input type="file" id="upload-props" accept="image/jpeg,image/png,image/webp,image/gif"
+                 multiple onchange="handleFileSelect('propertyImages', this.files)">
+          <div class="upload-icon">🏡</div>
+          <div class="upload-label">Click or drag property photos here</div>
+          <div class="upload-hint">JPEG, PNG, WebP or GIF · Max 10MB each · Up to 6 photos</div>
+        </div>
+        <div class="upload-progress" id="prog-props"><div class="upload-progress-bar" id="progbar-props"></div></div>
+        <div class="upload-status" id="status-props"></div>
+        <div class="image-preview-grid" id="preview-props"></div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-outline" onclick="goToStep(2)">← Back</button>
+        <button class="btn btn-primary" onclick="nextStep(3)">Next: Review & Generate →</button>
+      </div>
+    </div>
+
+    <!-- STEP 4: GENERATE -->
+    <div class="panel" id="panel-4">
+      <div class="card" id="review-card">
+        <div class="card-title">Review Your Page</div>
+        <div id="review-content"></div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-outline" onclick="goToStep(3)">← Back</button>
+        <button class="btn btn-success" onclick="generatePage()" id="btn-generate">✨ Generate My Page</button>
+      </div>
+    </div>
+
+    <!-- RESULT (shown after generation) -->
+    <div class="panel" id="panel-result">
+      <div class="card result-card">
+        <div class="result-icon">🎉</div>
+        <div class="result-title">Your page is ready!</div>
+        <div class="result-subtitle" id="result-version-label"></div>
+        <div class="result-actions">
+          <a class="btn btn-primary" id="result-view-link" href="#" target="_blank">View Your Page</a>
+          <button class="btn btn-outline" onclick="startOver()">Create Another →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <script>
+    // ──────────────────────────────────────────────
+    // State
+    // ──────────────────────────────────────────────
+    const state = {
+      selectedVersion: null,
+      versions: [],
+      uploadedFiles: {
+        agentPhoto: null,       // { url, filename }
+        propertyImages: []      // [{ url, filename }]
+      },
+      currentStep: 1
+    };
+
+    // ──────────────────────────────────────────────
+    // Init
+    // ──────────────────────────────────────────────
+    async function init() {
+      try {
+        const res = await fetch('/api/versions');
+        const data = await res.json();
+        if (!data.success) throw new Error(data.error);
+        state.versions = data.versions;
+        renderVersionGrid();
+      } catch (e) {
+        document.getElementById('version-grid').innerHTML =
+          `<div style="color:var(--red)">Failed to load templates: ${e.message}</div>`;
+      }
+    }
+
+    // ──────────────────────────────────────────────
+    // Version grid
+    // ──────────────────────────────────────────────
+    function renderVersionGrid() {
+      const grid = document.getElementById('version-grid');
+      grid.innerHTML = state.versions.map(v => `
+        <div class="version-card${state.selectedVersion === v.id ? ' selected' : ''}"
+             onclick="selectVersion('${v.id}')" data-vid="${v.id}">
+          <img class="version-thumb" src="${v.thumbnail}" alt="${v.name} thumbnail"
+               onerror="this.style.background='#e5e7eb';this.removeAttribute('onerror')">
+          <div class="version-info">
+            <div class="version-name">
+              ${v.name}
+              <span class="version-check">✓</span>
+            </div>
+            <div class="version-desc">${v.description}</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function selectVersion(id) {
+      state.selectedVersion = id;
+      renderVersionGrid();
+      document.getElementById('btn-next-1').disabled = false;
+    }
+
+    // ──────────────────────────────────────────────
+    // Step navigation
+    // ──────────────────────────────────────────────
+    function goToStep(n) {
+      state.currentStep = n;
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      document.getElementById(`panel-${n}`)?.classList.add('active');
+
+      document.querySelectorAll('.step').forEach(s => {
+        const sn = parseInt(s.dataset.step);
+        s.classList.toggle('active', sn === n);
+        s.classList.toggle('done', sn < n);
+        s.querySelector('.step-num').textContent = sn < n ? '✓' : sn;
+      });
+
+      if (n === 4) renderReview();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function nextStep(current) {
+      if (current === 1) {
+        if (!state.selectedVersion) { toast('Please select a template.', 'error'); return; }
+        goToStep(2);
+      } else if (current === 2) {
+        const name = document.getElementById('field-name').value.trim();
+        if (!name) { toast('Please enter your name.', 'error'); document.getElementById('field-name').focus(); return; }
+        goToStep(3);
+      } else if (current === 3) {
+        goToStep(4);
+      }
+    }
+
+    // ──────────────────────────────────────────────
+    // Specialties
+    // ──────────────────────────────────────────────
+    const specialties = [];
+
+    function addSpecialty() {
+      const input = document.getElementById('specialty-input');
+      const val = input.value.trim();
+      if (!val || specialties.includes(val)) { input.value = ''; return; }
+      specialties.push(val);
+      input.value = '';
+      renderSpecialties();
+    }
+
+    function removeSpecialty(i) {
+      specialties.splice(i, 1);
+      renderSpecialties();
+    }
+
+    function renderSpecialties() {
+      document.getElementById('specialty-tags').innerHTML = specialties
+        .map((s, i) => `<span class="spec-tag">${esc(s)} <button onclick="removeSpecialty(${i})" title="Remove">×</button></span>`)
+        .join('');
+    }
+
+    // ──────────────────────────────────────────────
+    // Image upload
+    // ──────────────────────────────────────────────
+    function onDragOver(e, zoneId) {
+      e.preventDefault();
+      document.getElementById(zoneId).classList.add('dragover');
+    }
+
+    function onDragLeave(zoneId) {
+      document.getElementById(zoneId).classList.remove('dragover');
+    }
+
+    function onDrop(e, field) {
+      e.preventDefault();
+      const zoneId = field === 'agent' ? 'zone-agent' : 'zone-props';
+      document.getElementById(zoneId).classList.remove('dragover');
+      handleFileSelect(field, e.dataTransfer.files);
+    }
+
+    async function handleFileSelect(field, files) {
+      if (!files || files.length === 0) return;
+
+      const isAgent = field === 'agent';
+      const progEl = document.getElementById(isAgent ? 'prog-agent' : 'prog-props');
+      const progBar = document.getElementById(isAgent ? 'progbar-agent' : 'progbar-props');
+      const statusEl = document.getElementById(isAgent ? 'status-agent' : 'status-props');
+
+      // Validate counts
+      const fileArr = Array.from(files);
+      if (isAgent && fileArr.length > 1) {
+        toast('Only one agent photo allowed. Using the first file.', 'info');
+        fileArr.splice(1);
+      }
+      const currentProps = state.uploadedFiles.propertyImages.length;
+      if (!isAgent && currentProps + fileArr.length > 6) {
+        const allowed = 6 - currentProps;
+        if (allowed <= 0) { toast('Maximum 6 property images allowed.', 'error'); return; }
+        toast(`Only ${allowed} more image(s) allowed. Taking first ${allowed}.`, 'info');
+        fileArr.splice(allowed);
+      }
+
+      // Validate types client-side
+      const allowed_types = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+      for (const f of fileArr) {
+        if (!allowed_types.includes(f.type)) {
+          toast(`"${f.name}" is not a supported image type.`, 'error');
+          return;
+        }
+        if (f.size > 10 * 1024 * 1024) {
+          toast(`"${f.name}" exceeds the 10MB size limit.`, 'error');
+          return;
+        }
+      }
+
+      // Show progress
+      progEl.style.display = 'block';
+      progBar.style.width = '10%';
+      statusEl.textContent = 'Uploading…';
+
+      const formData = new FormData();
+      for (const f of fileArr) {
+        formData.append(isAgent ? 'agentPhoto' : 'propertyImages', f);
+      }
+
+      try {
+        // Animate progress
+        let prog = 10;
+        const ticker = setInterval(() => {
+          prog = Math.min(prog + Math.random() * 20, 85);
+          progBar.style.width = `${prog}%`;
+        }, 250);
+
+        const res = await fetch('/api/upload', { method: 'POST', body: formData });
+        clearInterval(ticker);
+        progBar.style.width = '100%';
+
+        const data = await res.json();
+        if (!data.success) throw new Error(data.error);
+
+        if (isAgent && data.files.agentPhoto) {
+          state.uploadedFiles.agentPhoto = data.files.agentPhoto;
+          toast('Profile photo uploaded!', 'success');
+        }
+        if (!isAgent && data.files.propertyImages) {
+          state.uploadedFiles.propertyImages.push(...data.files.propertyImages);
+          toast(`${data.files.propertyImages.length} property image(s) uploaded!`, 'success');
+        }
+
+        renderPreviews();
+        statusEl.textContent = 'Upload complete ✓';
+        setTimeout(() => { progEl.style.display = 'none'; statusEl.textContent = ''; }, 2000);
+      } catch (err) {
+        progBar.style.width = '0%';
+        progEl.style.display = 'none';
+        statusEl.textContent = '';
+        toast(`Upload failed: ${err.message}`, 'error');
+      }
+
+      // Reset file inputs
+      document.getElementById('upload-agent').value = '';
+      document.getElementById('upload-props').value = '';
+    }
+
+    function renderPreviews() {
+      // Agent photo
+      const agentGrid = document.getElementById('preview-agent');
+      if (state.uploadedFiles.agentPhoto) {
+        agentGrid.innerHTML = `
+          <div class="preview-item">
+            <img src="${state.uploadedFiles.agentPhoto}" alt="Agent photo">
+            <button class="remove-btn" onclick="removeImage('agent',0)" title="Remove">×</button>
+            <div class="img-label">Profile</div>
+          </div>`;
+      } else {
+        agentGrid.innerHTML = '';
+      }
+
+      // Property images
+      const propsGrid = document.getElementById('preview-props');
+      if (state.uploadedFiles.propertyImages.length > 0) {
+        propsGrid.innerHTML = state.uploadedFiles.propertyImages.map((url, i) => `
+          <div class="preview-item">
+            <img src="${url}" alt="Property ${i+1}">
+            <button class="remove-btn" onclick="removeImage('props',${i})" title="Remove">×</button>
+            <div class="img-label">Photo ${i+1}</div>
+          </div>`).join('');
+      } else {
+        propsGrid.innerHTML = '';
+      }
+    }
+
+    function removeImage(field, index) {
+      if (field === 'agent') {
+        state.uploadedFiles.agentPhoto = null;
+      } else {
+        state.uploadedFiles.propertyImages.splice(index, 1);
+      }
+      renderPreviews();
+    }
+
+    // ──────────────────────────────────────────────
+    // Review
+    // ──────────────────────────────────────────────
+    function renderReview() {
+      const v = state.versions.find(x => x.id === state.selectedVersion);
+      const name = document.getElementById('field-name').value.trim();
+      const title = document.getElementById('field-title').value.trim();
+      const phone = document.getElementById('field-phone').value.trim();
+      const email = document.getElementById('field-email').value.trim();
+      const website = document.getElementById('field-website').value.trim();
+      const license = document.getElementById('field-license').value.trim();
+      const bio = document.getElementById('field-bio').value.trim();
+
+      document.getElementById('review-content').innerHTML = `
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          <div>
+            <div style="font-size:.75rem;font-weight:700;text-transform:uppercase;color:var(--muted);margin-bottom:4px">Template</div>
+            <div style="font-weight:600">${esc(v ? v.name : '')}</div>
+          </div>
+          <div>
+            <div style="font-size:.75rem;font-weight:700;text-transform:uppercase;color:var(--muted);margin-bottom:4px">Name</div>
+            <div style="font-weight:600">${esc(name) || '<em style="color:var(--muted)">Not set</em>'}</div>
+          </div>
+          <div>
+            <div style="font-size:.75rem;font-weight:700;text-transform:uppercase;color:var(--muted);margin-bottom:4px">Title</div>
+            <div>${esc(title) || '<em style="color:var(--muted)">Not set</em>'}</div>
+          </div>
+          <div>
+            <div style="font-size:.75rem;font-weight:700;text-transform:uppercase;color:var(--muted);margin-bottom:4px">Phone</div>
+            <div>${esc(phone) || '<em style="color:var(--muted)">Not set</em>'}</div>
+          </div>
+          <div>
+            <div style="font-size:.75rem;font-weight:700;text-transform:uppercase;color:var(--muted);margin-bottom:4px">Email</div>
+            <div>${esc(email) || '<em style="color:var(--muted)">Not set</em>'}</div>
+          </div>
+          <div>
+            <div style="font-size:.75rem;font-weight:700;text-transform:uppercase;color:var(--muted);margin-bottom:4px">Specialties</div>
+            <div>${specialties.length > 0 ? specialties.map(s => `<span style="background:#e0f2fe;color:#0369a1;padding:2px 8px;border-radius:100px;font-size:.8rem;margin-right:4px">${esc(s)}</span>`).join('') : '<em style="color:var(--muted)">None</em>'}</div>
+          </div>
+          <div>
+            <div style="font-size:.75rem;font-weight:700;text-transform:uppercase;color:var(--muted);margin-bottom:4px">Profile Photo</div>
+            <div>${state.uploadedFiles.agentPhoto ? '✅ Uploaded' : '<em style="color:var(--muted)">None</em>'}</div>
+          </div>
+          <div>
+            <div style="font-size:.75rem;font-weight:700;text-transform:uppercase;color:var(--muted);margin-bottom:4px">Property Images</div>
+            <div>${state.uploadedFiles.propertyImages.length > 0 ? `✅ ${state.uploadedFiles.propertyImages.length} image(s)` : '<em style="color:var(--muted)">None</em>'}</div>
+          </div>
+        </div>`;
+    }
+
+    // ──────────────────────────────────────────────
+    // Generate
+    // ──────────────────────────────────────────────
+    async function generatePage() {
+      const btn = document.getElementById('btn-generate');
+      btn.disabled = true;
+      btn.textContent = '⏳ Generating…';
+
+      const agentData = {
+        name: document.getElementById('field-name').value.trim(),
+        title: document.getElementById('field-title').value.trim(),
+        phone: document.getElementById('field-phone').value.trim(),
+        email: document.getElementById('field-email').value.trim(),
+        website: document.getElementById('field-website').value.trim(),
+        licenseNumber: document.getElementById('field-license').value.trim(),
+        bio: document.getElementById('field-bio').value.trim(),
+        specialties: [...specialties],
+        agentPhoto: state.uploadedFiles.agentPhoto || '',
+        propertyImages: state.uploadedFiles.propertyImages
+      };
+
+      try {
+        const res = await fetch('/api/generate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ version: state.selectedVersion, agentData })
+        });
+        const data = await res.json();
+        if (!data.success) throw new Error(data.error);
+
+        // Show result
+        document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+        document.getElementById('panel-result').classList.add('active');
+        document.getElementById('result-view-link').href = data.url;
+        document.getElementById('result-version-label').textContent =
+          `Generated with the "${data.version.name}" template`;
+        toast('Page generated successfully!', 'success');
+      } catch (e) {
+        toast(`Generation failed: ${e.message}`, 'error');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = '✨ Generate My Page';
+      }
+    }
+
+    function startOver() {
+      state.selectedVersion = null;
+      state.uploadedFiles = { agentPhoto: null, propertyImages: [] };
+      specialties.length = 0;
+      renderSpecialties();
+      renderPreviews();
+      renderVersionGrid();
+      document.getElementById('btn-next-1').disabled = true;
+      ['field-name','field-title','field-phone','field-email','field-website','field-license','field-bio']
+        .forEach(id => { document.getElementById(id).value = ''; });
+      goToStep(1);
+    }
+
+    // ──────────────────────────────────────────────
+    // Toast
+    // ──────────────────────────────────────────────
+    function toast(msg, type = 'info') {
+      const el = document.createElement('div');
+      el.className = `toast ${type}`;
+      el.innerHTML = `<span>${esc(msg)}</span>`;
+      document.getElementById('toast-container').appendChild(el);
+      setTimeout(() => el.remove(), 4000);
+    }
+
+    // ──────────────────────────────────────────────
+    // Helpers
+    // ──────────────────────────────────────────────
+    function esc(str) {
+      return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    // ──────────────────────────────────────────────
+    // Boot
+    // ──────────────────────────────────────────────
+    init();
+  </script>
+</body>
+</html>
